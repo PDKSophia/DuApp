@@ -56,10 +56,15 @@ WebApp
 
 ## 使用
  1 ：git clone 
+
  2 ：进入到restful下，composer install (默认安装了composer)
+
  3 ：进入到vue 下，npm install （默认安装了node）
+
  4 ：进入到vue 下，npm run dev
+
  （端口是1004，可以在vue/config/index.js 修改）
+ 
 ## 其他信息
 
 API接口是在github上找的，包括QQ音乐的API也是在github上找的
