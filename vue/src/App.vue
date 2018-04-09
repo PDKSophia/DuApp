@@ -27,6 +27,7 @@ export default {
 body{
 	background: white;
   font-family: 'Microsoft YaHei', Helvetica, Arial, sans-serif;
+  width: 100%;
 }
 .yd-tab-nav-item>a {
     display: inherit;

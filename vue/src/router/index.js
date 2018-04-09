@@ -13,6 +13,14 @@ import MorePage from '@/components/pages/movie/product/more'                    
 import DetailPage from '@/components/pages/movie/product/detail_page'           // 引入电影or电视剧详情页
 import SendCircle from '@/components/pages/cricle/send'                         // 引入朋友圈发送页
 
+// import User calendar sign
+import CalendarSignPage from '@/components/pages/personnal/calendar/sign'       // 引入签到页
+import GamesRouterPage from '@/components/pages/personnal/game/routers'         // 游戏路由
+import GameListPage from '@/components/pages/personnal/game/list'               // 游戏列表
+import GoBangPage from '@/components/pages/personnal/game/gobang/gobang'        // 引入五子棋
+import AnswerPage from '@/components/pages/personnal/game/answer/answer'        // 引入脑筋急转弯
+
+
 Vue.use(Router)
 
 export default new Router({
@@ -55,7 +63,7 @@ export default new Router({
     },
     // 我的
     {
-      path: '/info',
+      path: '/user/info',
       name: 'DuDuPersonnalPage',
       component: DuDuPersonnalPage
     },
@@ -71,5 +79,35 @@ export default new Router({
       name: 'DetailMovieOrTv',
       component: DetailPage
     },
+    // 签到打卡
+    {
+      path: '/user/calendar/sign',
+      name: 'calendar',
+      component : CalendarSignPage
+    },
+    // 游戏
+    {
+      path: '/user/game',
+      name: 'gamerouters',
+      component : GamesRouterPage,
+      redirect : '/user/game/list',
+      children : [
+        {
+          path : 'list',
+          name : 'gamelist',
+          component : GameListPage
+        },
+        {
+          path : 'gobang',
+          name : 'gobang',
+          component : GoBangPage
+        },
+        {
+          path : 'answer',
+          name : 'answer',
+          component : AnswerPage
+        }
+      ]
+    }
   ]
 })

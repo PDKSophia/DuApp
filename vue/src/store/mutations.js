@@ -13,6 +13,9 @@ const mutations = {
         state.CurrentImg = img
     },
 
+    ChangeUserScore(state, score){
+        state.CurrentScore = score
+    },
 
     PlayMp3Url(state, mp3url){
         state.Mp3Url = mp3url
@@ -25,6 +28,18 @@ const mutations = {
 
     ChangeFlag(state){
         state.Current_Flag = true
+    },
+
+    ChangeRemoveIndex(state, index){
+        state.RemovePicIndex = index
+    },
+
+    ChangeSignFlag(state){
+        state.isSign = true
+    },
+
+    DecreaseCount(state){
+        state.chees_count--
     }
 }
 export default mutations

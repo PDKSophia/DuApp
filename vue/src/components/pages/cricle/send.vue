@@ -19,16 +19,28 @@
     		        <div class="add_file" v-if="PicIsShow">
     		            <input type="file" name="image[]" id="image[]" @change="imageChange('add_phone','add_file')" />
     		        </div>
-                    <div class="add_file" v-for="(item, index) in PicArray" :key="index">
-                        <img :src="item.imgpath"> 
+                    <div class="add_file z_addfile" v-for="(item, index) in PicArray" :key="index">
+                        <img :src="item.imgpath" @click="RemovePhone(index)"> 
                     </div>
 		        </div>
+                <!--遮罩层-->
+				<div class="z_mask">
+				    <!--弹出框-->
+				    <div class="z_alert">
+				        <p>确定要删除这张图片吗？</p>
+				        <p>
+				            <span class="z_cancel" @click="CancelRemove">取消</span>
+				            <span class="z_sure" @click="SureRemove">确定</span>
+				        </p>
+				    </div>
+				</div>
             </form>
         </div>
 	</div>
 </template>
 
 <script>
+import store from '../../../store'
 import qs from 'qs'
 
 export default {
@@ -42,6 +54,7 @@ export default {
             filesArray : [],            //文件数组
         }
     },
+    store,
     methods : {
         back : function()
         {
@@ -86,6 +99,7 @@ export default {
                         var imgUrl = window.URL.createObjectURL(file.files[i])
                         this.PicArray.push({ 'imgpath' : imgUrl })
                     }
+                    console.log(this.PicArray)
                     this.count += fileList.length
                     this.choosePhone = false
                     if(this.count == 9)
@@ -106,6 +120,29 @@ export default {
             }
             this.picFlag = false   //选中最少一张图片就不显示提示
             file.value = ''   //虽然file的value不能设为有字符的值，但是可以设置为空值
+        },
+        RemovePhone : function(index)
+        {
+            console.log(index)
+            this.$store.commit('ChangeRemoveIndex', index)
+            // 获得遮布层
+            var mask = document.getElementsByClassName("z_mask")[0]
+            // 获得取消
+            mask.style.display = "block"
+        },
+        CancelRemove : function()
+        {
+            var mask = document.getElementsByClassName("z_mask")[0]
+            mask.style.display = "none"
+        },
+        SureRemove : function()
+        {
+            let num = this.$store.state.RemovePicIndex
+            var mask = document.getElementsByClassName("z_mask")[0]
+            mask.style.display = "none"
+            this.PicArray.splice(num, 1)
+            this.filesArray.splice(num, 1)
+            console.log(this.PicArray)
         },
         // 发送
         SubmitSend : function()
@@ -170,26 +207,6 @@ export default {
                                 .catch((err) => {
                                     console.log(err)
                                 })
-                                // $.ajax({
-                                //     url : "./upload",
-                                //     type : 'post',
-                                //     data : formdata,
-                                //     contentType : false,   // <form>表单构造的FormData对象，且已经声明了属性enctype="multipart/form-data"
-                                //     processData : false,    // 不处理发送的数据
-                                //     success: function (data) {  
-                                //         _this.$dialog.alert({mes: '发布成功'})
-                                //         setTimeout(function(){
-                                //             _this.$router.push({ path : '/' })
-                                //         }, 1500)
-                                //     },
-                                //     error:function(err){
-                                //         if(err.status == 500)
-                                //         {
-                                //             let errText = JSON.parse(err.responseText)
-                                //             _this.$dialog.alert({ mes : errText.msg })
-                                //         }
-                                //     }
-                                // });
                             }
                         }
                     ]
@@ -278,5 +295,50 @@ textarea {
   width: auto;
   border: 0;
   vertical-align: middle;
+}
+
+/*遮罩层*/
+.z_mask {
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    display: none;
+}
+/*弹出框*/
+.z_alert {
+    width: 56%;
+    height: 4.2rem;
+    border-radius: .2rem;
+    background: #fff;
+    font-size: .68rem;
+    text-align: center;
+    position: absolute;
+    left: 28%;
+    top: 45%;
+    margin-left: -1.5rem;
+    margin-top: -2rem;
+}
+.z_alert p:nth-child(1) {
+    line-height: 1.5rem;
+    padding: .56rem 0rem;
+    font-size: .82rem;
+}
+/*取消和确定*/
+.z_alert p:nth-child(2) span {
+    display: inline-block;
+    width: 49%;
+    padding-top: .48rem;
+    height: 1.5rem;
+    line-height: .5rem;
+    float: left;
+    border-top: 1px solid #ddd;
+}
+/*给取消和确定添加边框*/
+.z_cancel {
+    border-right: 1px solid #ddd;
 }
 </style>

@@ -54,7 +54,7 @@
         <div style="height:10px;background:#efeff4"></div>
         <div class="grids-cell">
             <yd-grids-group :rows="3" item-height="4.6rem">
-                <yd-grids-item v-for="(item, index) in AbilityList" :key="index">
+                <yd-grids-item v-for="(item, index) in AbilityList" :key="index"  :link="item.path">
                     <div slot="else" style="text-align: center;">
                         <img :src="item.symbol" style="height: 2rem;">
                         <p class="text-label">{{ item.content }}</p>
@@ -84,7 +84,8 @@ export default {
 	          	},
 	          	{
 	             	symbol : require('../../../assets/tab/calendar.png'),
-	             	content : '签到',
+					 content : '签到',
+					 path : '/user/calendar/sign'
 	          	},
 	          	{
 	             	symbol : require('../../../assets/tab/shop.png'),
@@ -101,6 +102,7 @@ export default {
 	          	{
 	             	symbol : require('../../../assets/game.png'),
 	             	content :  '游戏',
+					path : '/user/game'
 	          	},
 	          	{
 	             	symbol : require('../../../assets/tab/pic.png'),
@@ -160,10 +162,11 @@ export default {
 						_this.UserInfo.u_id = res.data.u_id
 						_this.UserInfo.name = res.data.name
 						_this.UserInfo.headimg = res.data.headimg
-
+						
 						_this.$store.commit('ChangeUserID', _this.UserInfo.u_id)
 						_this.$store.commit('ChangeUserName', _this.UserInfo.name)
 						_this.$store.commit('ChangeUserImg', _this.UserInfo.headimg)
+						_this.$store.commit('ChangeUserScore', res.data.score)
 					}
 				})
 				.catch((err) => {

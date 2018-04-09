@@ -2,6 +2,8 @@ const state = {
     CurrentName : '',               // 当前登陆人名字
     CurrentU_ID : '',               // 当前登陆人U_ID
     CurrentImg : '',                // 当前登陆人头像
+    CurrentScore : 0,               // 当前登陆人积分
+    
     Current_Flag : false,           // 第一次弹窗告知需登陆
 
     MovieScore : [],                // 电影的评分
@@ -54,7 +56,12 @@ const state = {
 
     mp3_mid : '',                   // 歌曲播放的mid
     Mp3Url : '',                    // 歌曲播放地址
-    IsPlay : false                  
+    IsPlay : false,            
+    RemovePicIndex : '',
+
+    isSign : false,                 // 是否已经签到
+    isCheesOut : false,             // 是否五子棋挑战次数已完
+    chees_count : 10                 // 每日三次挑战机会
 }
 
 export default state

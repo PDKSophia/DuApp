@@ -44,7 +44,7 @@ export default {
 				{
 					pic : require('../../assets/my.png'),
 					label : '我',
-					path : '/info'
+					path : '/user/info'
 				}
 			]
 		}
