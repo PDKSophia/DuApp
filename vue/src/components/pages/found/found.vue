@@ -10,7 +10,7 @@
 			</template>
 		</div>
 		<div class="Article-Auth">
-			<div class="Auth-blog" v-for="(art, index) in ArtList" :key="index">
+			<div class="Auth-blog" v-for="(art, index) in ArtList" :key="index" @click="ViewArticle(art.id)" :class="[{'last-cell' : index+1 == ArtList.length}]">
 				<p class="head-title">{{ art.titles }}</p>
 				<p class="summary-icon">{{ art.likes }}人喜欢 - {{ art.author }} - {{ art.times }}</p>
 			</div>
@@ -39,11 +39,18 @@ export default {
            	 	this.$dialog.toast({mes: `搜索：${value} `});
 			}
 		},
-		initArticleList : function()
+		ViewArticle(artID){
+			this.$router.push({ path : '/display/article/' + artID })
+		},
+		initArticleList()
 		{
 			let _this = this
-			let $domain_url = 'http://www.pengdaokuan.cn/DuApp/restful/public/index.php/index/Article/ArticleList'
-			this.$axios.get($domain_url)
+			this.$axios.get('http://www.pengdaokuan.cn/blog/restful/public/index.php/index/Article/TotalArticle',{
+                params : {
+                    /* code.... */
+                    type : 'normal',
+                }
+            })
 			.then(function(res){
 				console.log(res)
 				for(let i = 0; i < res.data.length; i++)
@@ -54,8 +61,9 @@ export default {
 				for(let j = 0; j < res.data.length; j++)
 				{
 					_this.ArtList.push({
+						'id' : res.data[j].id,
 						'titles' : res.data[j].titles,
-						'likes' : res.data[j].likes,
+						'likes' : res.data[j].view,
 						'author' : res.data[j].author,
 						'times' : _this.Time[j].times
 					})
@@ -103,5 +111,9 @@ export default {
 .Auth-blog p.summary-icon{
 	font-size: .68rem;
 	color: #999;
+}
+.last-cell{
+	margin-bottom: 3.2rem;
+	border: none;
 }
 </style>

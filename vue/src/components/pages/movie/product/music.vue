@@ -2,10 +2,8 @@
     <div>
         <div class="music-slide">
             <yd-slider autoplay="2500">
-                <yd-slider-item v-for="(item, index) in slides" :key="index">
-                    <router-link :to="{ path : item.path + '/' + item.name }">
-                        <img :src="item.src">
-                    </router-link>
+                <yd-slider-item v-for="(item, index) in slides" :key="index" :src="item.src">
+                    <img :src="item.src">
                 </yd-slider-item>
             </yd-slider>
         </div>

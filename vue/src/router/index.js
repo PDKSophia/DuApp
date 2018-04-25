@@ -19,7 +19,11 @@ import GamesRouterPage from '@/components/pages/personnal/game/routers'         
 import GameListPage from '@/components/pages/personnal/game/list'               // 游戏列表
 import GoBangPage from '@/components/pages/personnal/game/gobang/gobang'        // 引入五子棋
 import AnswerPage from '@/components/pages/personnal/game/answer/answer'        // 引入脑筋急转弯
+import UserOpreatingPage from '@/components/pages/personnal/tool/detail'        // 引入使用介绍
+import UserSettingPage from '@/components/pages/personnal/tool/setting'         // 引入设置
 
+// import Article Page
+import ArticlePage from '@/components/pages/found/view'                         // 引入文章
 
 Vue.use(Router)
 
@@ -41,6 +45,12 @@ export default new Router({
       path: '/display',
       name: 'DuDuFoundPage',
       component: DuDuFoundPage
+    },
+    // 文章
+    {
+      path: '/display/article/:artID',
+      name: 'Article',
+      component: ArticlePage
     },
     // 圈子
     {
@@ -108,6 +118,18 @@ export default new Router({
           component : AnswerPage
         }
       ]
+    },
+    // 使用说明
+    {
+      path: '/user/opreating',
+      name: 'opreating',
+      component : UserOpreatingPage,
+    },
+    // 设置
+    {
+      path: '/user/setting',
+      name: 'setting',
+      component : UserSettingPage,
     }
   ]
 })

@@ -26,10 +26,11 @@
 				<p style="margin-top: 1rem; font-size: .88rem">还未登陆，点此
 					<a style="text-decoration:underline" onclick="document.getElementById('modal_login').style.display='block'">登陆~</a>
 				</p>
+				<!-- 登陆 -->
 				<div id="modal_login" class="modal">
 					<form class="modal-content animate">
 						<div class="imgcontainer">
-							<span @click="CloseModal" class="close" title="Close Modal">&times;</span>
+							<span @click="CloseModal('modal_login')" class="close" title="Close Modal">&times;</span>
 							<img src="../../../assets/pig.jpg" alt="Avatar" class="avatar">
 						</div>
 						<div class="container">
@@ -43,8 +44,34 @@
 						</div>
 
 						<div class="container" style="background-color:#f1f1f1">
-							<button type="button" class="cancelbtn">注册 ? </button>
+							<button type="button" class="cancelbtn" @click="ShowRegisterDialog">注册 ? </button>
 							<span class="psw">Forgot <a href="#">password?</a></span>
+						</div>
+					</form>
+				</div>
+				<!-- 注册 -->
+				<div id="modal_register" class="modal">
+					<form class="modal-content animate">
+						<div class="imgcontainer">
+							<span @click="CloseModal('modal_register')" class="close" title="Close Modal">&times;</span>
+							<img src="../../../assets/pig.jpg" alt="Avatar" class="avatar">
+						</div>
+						<div class="container">
+							<p>用户号</p>
+							<input type="text" placeholder="例如 : 1505060201" v-model.trim="regUser.reg_u_id">
+							<p>邮箱</p>
+							<input type="email" placeholder="例如 : 1505060201" v-model.trim="regUser.reg_email">
+							<p>密码</p>
+							<input type="password" placeholder="请输入密码" v-model.trim="regUser.reg_password">
+							<p>验证码</p>
+							<input type="number" placeholder="验证码" v-model.trim="regUser.reg_code">
+							<button type="button" id="getCode" @click="getAccessCode">获得验证码</button>
+
+							<button type="button" @click="UserRegister">注册</button>
+						</div>
+						<div class="container" style="background-color:#f1f1f1">
+							<button type="button" class="cancelbtn" @click="ShowLoginDialog">登陆 ? </button>
+							<span class="psw">Having <a href="#">account?</a></span>
 						</div>
 					</form>
 				</div>
@@ -68,6 +95,8 @@
 <script>
 import store from '../../../store'
 import TaskDialog from '../../../task/dialog'
+import FormPatt from '../../../task/form'
+
 import qs from 'qs'
 
 export default {
@@ -76,6 +105,13 @@ export default {
 		return {
 			u_id : '',
 			password: '',
+			
+			regUser : {
+				reg_u_id : '',
+				reg_password : '',
+				reg_code : '',
+				reg_email : '',
+			},
 			// 关于
 			AbilityList : [
 	          	{
@@ -111,10 +147,12 @@ export default {
 	          	{
 	             	symbol : require('../../../assets/detail.png'),
 	             	content : '手册',
+					path : '/user/opreating'
 	          	},
 	          	{
 	             	symbol : require('../../../assets/tab/setting.png'),
 	             	content : '设置',
+					path : '/user/setting'
 	          	}
 			],
 			UserInfo : {
@@ -125,9 +163,21 @@ export default {
 		}
 	},
 	methods : {
-		CloseModal : function()
+		ShowRegisterDialog : function()
 		{
 			document.getElementById('modal_login').style.display='none'
+			document.getElementById('modal_register').style.display='block'
+		},
+		ShowLoginDialog : function()
+		{
+			document.getElementById('modal_login').style.display='block'
+			document.getElementById('modal_register').style.display='none'
+		},
+		// 关闭弹窗
+		CloseModal : function(dialog_type)
+		{
+			// dialog_type = login || register
+			document.getElementById(dialog_type).style.display='none'
 		},
 		// 获取用户的信息
 		GetUserInfo : function()
@@ -173,6 +223,72 @@ export default {
 					console.log('err')
 				})
 			}
+		},
+		// 注册
+		UserRegister : function()
+		{
+			console.log(123)
+		},
+		// 获得验证码
+		getAccessCode : function()
+		{
+			
+			var sleep = 10
+			if(this.regUser.reg_email != '')
+			{
+				if(FormPatt.Email(this.regUser.reg_email))
+				{
+					this.SendAccessCode()
+					var btn = document.getElementById('getCode')
+					btn.innerHTML = sleep + 's后重试'
+					var interval = setInterval(function(){
+						sleep--
+						btn.disabled = true	//按钮不可用
+						btn.innerHTML = sleep + 's后重试'
+						if(sleep == 0)
+						{
+							sleep = 10
+							clearInterval(interval)  //清除定时器
+							btn.innerHTML = '获得验证码'
+							btn.disabled = false
+						}
+					}, 1000)
+				}
+				else
+				{
+					this.$dialog.toast({
+						mes: '请输入正确邮箱~',
+						timeout: 1500,
+						icon: 'error',
+					})
+				}
+				
+			}
+			else
+			{
+				this.$dialog.toast({
+					mes : '请输入邮箱~'
+				})
+			}
+		},
+		SendAccessCode : function()
+		{
+			let _this = this
+			// 发送数据
+			let _url = 'http://www.pengdaokuan.cn/DuApp/restful/public/index.php/index/User/RandCode'
+			this.$axios.post(_url, qs.stringify({
+				email : _this.regUser.reg_email
+			}))
+			.then((res) => {
+				if(res.data.code == 904){
+					this.$dialog.toast({
+						mes : res.data.message
+					})
+				}
+			})
+			.catch((err) => {
+				console.log('err')
+			})
 		},
 		// 弹窗告知是否登陆 
 		StoreUserIsExist : function()
@@ -287,13 +403,24 @@ export default {
 }
 
 
-input[type=text], input[type=password] {
+input[type=text], input[type=password], input[type=number], input[type=email]{
     width: 100%;
     padding: 12px;
     margin: 8px 0;
     display: inline-block;
     border: 1px solid #ccc;
     box-sizing: border-box;
+}
+input[type=number] {
+    width: 58%;
+}
+/* 获得验证码 */
+button#getCode {
+	width: 40%;
+	background-color: #4CAF50;
+	border:none;
+	color:white;
+    padding: 14px 3px;
 }
 /* 登陆按钮 */
 button {
@@ -371,7 +498,6 @@ span.psw {
     -webkit-animation: animatezoom 0.6s;
     animation: animatezoom 0.6s
 }
-
 @-webkit-keyframes animatezoom {
     from {-webkit-transform: scale(0)} 
     to {-webkit-transform: scale(1)}

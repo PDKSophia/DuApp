@@ -6,19 +6,21 @@
 			<yd-search v-model="value1" :on-submit="submitHandler" placeholder="搜索热门内容"></yd-search>
     	</div>
     	<!-- 文章 -->
-    	<div class="app-home-article">
-    		<div class="content">
-    			<div class="cover">
-                    <img src="../../../assets/img/art.jpg">
-    			</div>
-    			<h3>为什么要珍惜眼前人</h3>
-    			<p>到了现在我才懂，我所嘲笑的，那些男生对女生的骚扰全部都是让人觉得恶心的性冲动，却恰恰也是我们一生之中最美好的青春，永不复返的初恋时光。</p>
-    		</div>
-    		<div class="author">
-    			<i class="fa fa-graduation-cap" style="color:#88d356"></i><span class="name">By Sophia</span>
-    			<span class="right_label">公众号 | PPPSecret</span>
-    		</div>
-    	</div>
+        <a href = 'http://www.pengdaokuan.cn/a.html'>
+        <div class="app-home-article">
+            <div class="content">
+                <div class="cover">
+                    <img src="../../../assets/img/art4.jpeg">
+                </div>
+                <h3>面试总结 | 七牛云与京东的面试</h3>
+                <p>大三，专业为软件工程，自学前端与后端差不多一年，由于大三很多小伙伴都外出实习，于是 “ 博主 ” 也想投简历试试，如果运气好，没准能得个offer ?  事实证明，运气还是差了点...</p>
+            </div>
+            <div class="author">
+                <i class="fa fa-graduation-cap" style="color:#88d356"></i><span class="name">By Sophia</span>
+                <span class="right_label">公众号 | PPPSecret</span>
+            </div>
+        </div>
+        </a>
         <div style="height:10px;background:#efeff4"></div>
     	<!-- 标签 -->
         <div class="app-home-content">
@@ -39,6 +41,20 @@
             </div>
         </div>
 
+        <div style="height:12px;background:#efeff4"></div>
+        <div class="app-home-article">
+    		<div class="content">
+    			<div class="cover">
+                    <img src="../../../assets/img/art.jpg">
+    			</div>
+    			<h3>为什么要珍惜眼前人</h3>
+    			<p>到了现在我才懂，我所嘲笑的，那些男生对女生的骚扰全部都是让人觉得恶心的性冲动，却恰恰也是我们一生之中最美好的青春，永不复返的初恋时光。</p>
+    		</div>
+    		<div class="author">
+    			<i class="fa fa-graduation-cap" style="color:#88d356"></i><span class="name">By Sophia</span>
+    			<span class="right_label">公众号 | PPPSecret</span>
+    		</div>
+    	</div>
         <div style="height:12px;background:#efeff4"></div>
         <div class="app-home-article">
             <div class="content">

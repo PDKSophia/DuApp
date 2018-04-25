@@ -1,20 +1,17 @@
 <template>
     <div id="app">
       <router-view></router-view>
-      <!-- <play-nav></play-nav> -->
     	<app-footer></app-footer>
     </div>
 </template>
 
 <script>
 import AppFooter from './components/common/footer'
-// import PlayNav from './components/pages/movie/product/base/music_nav'
 
 export default {
     name: 'app',
     components: {
       AppFooter : AppFooter,
-      // PlayNav : PlayNav
     }
 }
 </script>
@@ -29,10 +26,32 @@ body{
   font-family: 'Microsoft YaHei', Helvetica, Arial, sans-serif;
   width: 100%;
 }
+
+.yd-cell-item{
+    padding: 12px;
+}
 .yd-tab-nav-item>a {
     display: inherit;
     color: inherit;
     font-size: .8rem;
     padding: .8rem;
+}
+.yd-grids-3:before {  
+    border:none;
+}
+.yd-cell-title {
+    padding: 5px 12px 5px;   
+    font-size: 12px;
+}
+
+.yd-cell-left {
+    color: #333;
+    font-size: .72rem;
+    white-space: nowrap;
+    -ms-flex-align: center;
+}
+.yd-textarea>textarea {
+    height: 75px;
+    font-size: .72rem;
 }
 </style>
