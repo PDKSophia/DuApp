@@ -30,15 +30,15 @@
                         <p>{{ ++index }}</p>
                     </div>
                     <yd-flexbox-item class="song-introduce">
-                        <div @click="PlayMusic(item.song_mid, index)">
+                        <div @click="PlayMusic(item.song_id, index)">
                             <p class="song_name">{{ item.song_name }}<i class="fa fa-youtube-play mv-icon"></i></p>
-                            <p class="song_album"><i class="fa fa-share-alt share-alt"></i>专辑：{{ item.album_name }}</p>
+                            <p class="song_album"><i class="fa fa-share-alt share-alt"></i>歌手 : {{ item.singer_name }}</p>
                             <audio :src="mp3_url" controls="controls" loop="loop" preload="auto" v-show="isHideAudio" id="audio"></audio>
                         </div>
                     </yd-flexbox-item>
                     <div class="icon">
-                        <i class="fa fa-pause-circle mores-icon" v-if="index == mp3_index" @click="PauseMusic(item.song_mid, index)"></i>
-                        <i class="fa fa-play-circle mores-icon" v-else @click="PlayMusic(item.song_mid, index)"></i>
+                        <i class="fa fa-pause-circle mores-icon" v-if="index == mp3_index" @click="PauseMusic(item.song_id, index)"></i>
+                        <i class="fa fa-play-circle mores-icon" v-else @click="PlayMusic(item.song_id, index)"></i>
                     </div>
                 </yd-flexbox>
             </div>
@@ -74,15 +74,15 @@ export default {
                 }
             })
             .then((res) => {
-                // console.log(res)
+                console.log(res)
                 let data = res.data
                 _this.SongLength = data.length
                 for(let i = 0; i < data.length; i++)
                 {
                     _this.SongList.push({
-                        'song_mid' : data[i].song_mid,
+                        'song_id' : data[i].song_id,
                         'song_name' : data[i].song_name,
-                        'album_name' : data[i].album_name,
+                        'singer_name' : data[i].singer_name,
                     })
                 }
                 _this.isShow = true
@@ -99,9 +99,9 @@ export default {
             this.initList()
         },
         // 播放音乐
-        PlayMusic : function(song_mid, index)
+        PlayMusic : function(song_id, index)
         {
-            if(song_mid == this.$store.state.mp3_mid)
+            if(song_id == this.$store.state.mp3_mid)
             {
                 let audioPlayer = document.getElementById('audio')
                 audioPlayer.play()
@@ -113,7 +113,7 @@ export default {
                 let url = 'http://www.pengdaokuan.cn/DuApp/restful/public/index.php/index/Music/SongInfo'
                 this.$axios.get(url, {
                     params : {
-                        'song_mid' : song_mid
+                        'song_id' : song_id
                     }
                 })
                 .then((res) => {
@@ -121,7 +121,7 @@ export default {
                     _this.mp3_url = res.data.mp3_url
                     _this.mp3_index = index
                     _this.$store.commit('PlayMp3Url', res.data.mp3_url)
-                    _this.$store.commit('MarkMp3Mid', song_mid)
+                    _this.$store.commit('MarkMp3Mid', song_id)
                 })
                 .catch((err) => {
                     console.log(err)
@@ -130,7 +130,7 @@ export default {
             
         },
         // 暂停音乐
-        PauseMusic : function(song_mid, index)
+        PauseMusic : function(song_id, index)
         {
             let audioPlayer = document.getElementById('audio')
             // console.log(audioPlayer)

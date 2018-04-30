@@ -169,6 +169,7 @@ export default {
                 var myForm = document.getElementById('uploadForm')
                 var formdata = new FormData(myForm)
                 formdata.append('context', _this.context)
+                formdata.append('u_id', _this.$store.state.CurrentU_ID)
                 if(_this.filesArray.length == 1 )
                 {
                     formdata.append('image[]', _this.filesArray[0])
@@ -202,7 +203,13 @@ export default {
                                     }
                                 })
                                 .then((res) => {
-                                    console.log(res)
+                                    _this.$dialog.toast({
+                                        mes : res.data.message,
+                                        icon : 'success'
+                                    })
+                                    setTimeout(()=>{
+                                        _this.$router.go(-1)
+                                    }, 2000)
                                 })
                                 .catch((err) => {
                                     console.log(err)

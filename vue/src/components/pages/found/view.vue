@@ -25,12 +25,12 @@
                 <img :src="ArtPicArray[0].pic">
             </div>
 
-            <div class="art-contents" v-html="art.content">
-            </div>
+            <div class="art-contents" v-html="art.content"></div>
 
             <div class="art-pic">
-                <yd-lightbox>
-                    <yd-lightbox-img v-for="(ArtPic, index) in ArtPicArray" :key="index"  :class="[{'last-pic' : index+1 == ArtPicArray.length}]" :src="ArtPic.pic"></yd-lightbox-img>
+                <div v-if="ArtPicArray.length==1" style="margin-bottom: 55px"></div>
+                <yd-lightbox v-else>
+                    <yd-lightbox-img v-for="(ArtPic, index) in ArtPicArray" :key="index" v-if="index != 0" :class="[{'last-pic' : index+1 == ArtPicArray.length}]" :src="ArtPic.pic"></yd-lightbox-img>
                 </yd-lightbox>
             </div>
         </div>

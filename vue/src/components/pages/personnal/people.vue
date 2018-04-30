@@ -26,7 +26,7 @@
 				<p style="margin-top: 1rem; font-size: .88rem">还未登陆，点此
 					<a style="text-decoration:underline" onclick="document.getElementById('modal_login').style.display='block'">登陆~</a>
 				</p>
-				<!-- 登陆 -->
+				<!-- 登陆 --> 
 				<div id="modal_login" class="modal">
 					<form class="modal-content animate">
 						<div class="imgcontainer">
@@ -52,21 +52,22 @@
 				<!-- 注册 -->
 				<div id="modal_register" class="modal">
 					<form class="modal-content animate">
-						<div class="imgcontainer">
+						<div class="imgcontainer" id="head-file">
+							<input type="file" name="image" id="image" @change="HeadImage('head-file')">
 							<span @click="CloseModal('modal_register')" class="close" title="Close Modal">&times;</span>
-							<img src="../../../assets/pig.jpg" alt="Avatar" class="avatar">
+							<img :src="regUser.reg_image" v-if="HeadFiles.length!=0" alt="Avatar" class="avatar">
+							<img src="../../../assets/pig.jpg" v-else alt="Avatar" class="avatar">
 						</div>
 						<div class="container">
 							<p>用户号</p>
-							<input type="text" placeholder="例如 : 1505060201" v-model.trim="regUser.reg_u_id">
+							<input type="text" placeholder="例如 : 帅气的一号" v-model.trim="regUser.reg_u_id">
 							<p>邮箱</p>
-							<input type="email" placeholder="例如 : 1505060201" v-model.trim="regUser.reg_email">
+							<input type="email" placeholder="例如 : abc@qq.com" v-model.trim="regUser.reg_email">
 							<p>密码</p>
 							<input type="password" placeholder="请输入密码" v-model.trim="regUser.reg_password">
 							<p>验证码</p>
 							<input type="number" placeholder="验证码" v-model.trim="regUser.reg_code">
 							<button type="button" id="getCode" @click="getAccessCode">获得验证码</button>
-
 							<button type="button" @click="UserRegister">注册</button>
 						</div>
 						<div class="container" style="background-color:#f1f1f1">
@@ -111,6 +112,7 @@ export default {
 				reg_password : '',
 				reg_code : '',
 				reg_email : '',
+				reg_image : ''
 			},
 			// 关于
 			AbilityList : [
@@ -159,7 +161,8 @@ export default {
                 u_id : '',
                 name : '',
                 headimg : ''
-            },
+			},
+			HeadFiles : []			//头像
 		}
 	},
 	methods : {
@@ -305,6 +308,39 @@ export default {
 				});
 				_this.$store.commit('ChangeFlag')
 			}
+		},
+		// 头像上传
+		HeadImage : function(head)
+		{
+			var headBox = document.getElementById('image')
+			var headimg = headBox.files
+			this.HeadFiles = []					// 清空数组，否则会上传多张头像
+			this.HeadFiles.push(headimg[0])
+            // console.log(this.HeadFiles)
+			// 获得图片名， 大小， 类型(全转换小写)
+            var imgName = headimg[0].name
+			var imgSize = headimg[0].size
+			var imgType = imgName.substring(imgName.lastIndexOf(".")+1).toLowerCase()
+            // 判断是否属于jpg  jpeg png
+            if(imgType != 'jpg' && imgType != 'jpeg' && imgType != 'png')
+            {
+                this.$dialog.toast({ mes : '只支持jpg , jpeg , png格式', timeout : 1000 })
+                imgName = ''
+                headimg = null
+                return false
+            }
+            // 判断大小
+            if(imgSize > 2048000)       // 1M = 1024 * 1024 * 1
+            {
+                this.$dialog.toast({ mes : '图片不能大于2M', timeout : 1000 })
+                headimg = null
+                return false
+			}
+			else
+			{
+				var imgUrl = window.URL.createObjectURL(headBox.files[0])
+				this.regUser.reg_image = imgUrl
+			}
 		}
 	},
 	created(){
@@ -353,6 +389,7 @@ export default {
 	width: 6rem;
 	height: 6rem;
 	margin-left: 10%;
+    border: 1px solid #99D3F5;
 }
 .app-person-infomation .message{
 	float: left;
@@ -449,6 +486,8 @@ button:hover {
 img.avatar {
     width: 40%;
     border-radius: 50%;
+	border: 1px solid #4CAF50;
+	padding: 6px;
 }
 
 .container {
@@ -516,5 +555,28 @@ span.psw {
     .cancelbtn {
        width: 100%;
     }
+}
+
+/* 头像上传 */
+#head-file {
+    position: relative;
+    display: inline-block;
+    /* background: #D0EEFF; */
+    border-radius: 4px;
+    padding: 4px 12px;
+    overflow: hidden;
+    /* color: #1E88C7; */
+    text-indent: 0;
+    line-height: 20px;
+}
+#head-file input {
+    position: absolute;
+    right: 0;
+    top: 0;
+	height: 6rem;
+    opacity: 0;
+}
+#head-file:hover {
+    text-decoration: none;
 }
 </style>
