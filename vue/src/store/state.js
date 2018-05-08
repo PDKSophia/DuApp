@@ -3,7 +3,7 @@ const state = {
     CurrentU_ID : '',               // 当前登陆人U_ID
     CurrentImg : '',                // 当前登陆人头像
     CurrentScore : 0,               // 当前登陆人积分
-    
+    Code : '',                      // 验证码
     Current_Flag : false,           // 第一次弹窗告知需登陆
 
     MovieScore : [],                // 电影的评分

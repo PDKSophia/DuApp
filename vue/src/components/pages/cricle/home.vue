@@ -8,19 +8,20 @@
             <div class="pic-guess">
                 <div class="cell-title"  v-for="(msg, index) in MsgArray" :key="index" :class="[{'last-cell' : index+1 == MsgArray.length }]">
                     <div class="image">
-                        <img :src="msg.master" alt="" @click="ViewUserInfo(msg.student_num)">
+                        <img v-if="msg.master!=null" :src="msg.master" alt="" @click="ViewUserInfo(msg.student_num)">
+                        <img v-else src="../../../assets/pig.jpg" @click="ViewUserInfo(msg.student_num)">
                         <div class="introduce" style="float:left">
-                            <p class="title">{{ msg.user }}</p>
+                            <p class="title">{{ msg.u_id }}</p>
                             <p class="times">{{ msg.time }}</p>
                         </div>
                     </div>
                     <div class="content">
-                        <p>{{ msg.content }}</p>
+                        <p>{{ msg.context }}</p>
                     </div>
                     <div class="cell-phone">
-                        <img src="../../../assets/img/tv1.jpeg" alt="">
-                        <img src="../../../assets/img/tv2.jpeg" alt="">
-                        <img src="../../../assets/img/tv3.jpeg" alt="">
+                        <yd-lightbox>
+                            <yd-lightbox-img v-for="(item, key) in msg.image" :key="key" :src="item.pic"></yd-lightbox-img>
+                        </yd-lightbox>
                     </div>
                 </div>
             </div>
@@ -38,30 +39,47 @@ export default {
     },
     data(){
         return {
-            MsgArray : [
-                {
-                    master : require('../../../assets/page/head3.jpg'),
-                    pic : require('../../../assets/pig.jpg'),
-                    time : '1小时前',
-                    user : '阿华田',
-                    content: 'good lucky to me , And i come here , ShangHai ~'
-                },
-                {
-                    master : require('../../../assets/page/head2.jpg'),
-                    pic : require('../../../assets/pig.jpg'),
-                    time : '2小时前',
-                    user : 'Sophia',
-                    content: '大吉大利， 今晚吃鸡 ~'
-                },
-                {
-                    master : require('../../../assets/page/head1.jpg'),
-                    pic : require('../../../assets/pig.jpg'),
-                    time : '3小时前',
-                    user : 'QQ小冰',
-                    content : '安利大家一本特别好看的书！！！'
-                }
-            ]
+            MsgArray : [],
+            ImageArray : []
         }
+    },
+    methods : {
+        TotalList : function()
+        {
+            let _this = this
+            let url = 'http://www.pengdaokuan.cn/DuApp/restful/public/index.php/index/Circle/CircleList'
+            this.$axios.get(url, {
+                params : {
+
+                }
+            })
+            .then((res) => {
+                // console.log(res)
+                let result = res.data
+                for(let j = 0; j < result.length; j++)
+                {
+                    console.log(123)
+                }
+                for(let i = 0; i < res.data.length; i++)
+                {
+                    _this.MsgArray.push({
+                        'u_id'   : res.data[i].u_id,
+                        'master' : res.data[i].headimg,
+                        'time'   : res.data[i].time,
+                        'user'   : res.data[i].name,
+                        'context': res.data[i].context,
+                        'image'  : res.data[i].image
+                    })
+                }
+                console.log(_this.MsgArray)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+        }
+    },
+    created() {
+        this.TotalList()
     }
 }
 
@@ -115,14 +133,14 @@ export default {
     font-size: .88rem;
     color: #555;
     width: 100%;
-    overflow: hidden;
+    /* overflow: hidden;
     white-space:nowrap; 
-    text-overflow:ellipsis; 
+    text-overflow:ellipsis;  */
     line-height: 1.3rem;
 }
 .cell-phone img{
-    width: 30%;
-    height: 9rem;
+    width: 31%;
+    height: 8.5rem;
     margin-left: .3rem;
 }
 .last-cell {

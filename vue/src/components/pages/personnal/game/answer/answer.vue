@@ -38,8 +38,6 @@
                 </div>
             </div>
         </div>
-
-
     </div>
 </template>
 
@@ -108,8 +106,13 @@ export default {
             })
         }
     },
-    mounted(){
-        this.ScrollQuestion()
+    watch : {
+        List(newValue){
+            // 在List赋值之后，回流重绘页面
+            this.$nextTick(()=>{
+                this.ScrollQuestion(1)
+            })
+        }
     },
     created () {
         this.AxiosQuestion()

@@ -5,12 +5,12 @@
             <p class="title">我的</p>
     	</div>
 		<!-- 用户已登陆 -->
-    	<div class="app-person-infomation" v-if="UserInfo.name != ''">
+    	<div class="app-person-infomation" v-if="UserInfo.u_id != ''">
     		<div class="heading">
-    			<img src="../../../assets/pig.jpg">
+    			<img :src="UserInfo.headimg">
     		</div>
     		<div class="message">
-    			<p class="name">{{ UserInfo.name }}</p>
+    			<p class="name">{{ UserInfo.u_id }}</p>
     			<p class="about">查看或编辑个人主页</p>
     		</div>
     		<div class="arrow">
@@ -51,7 +51,7 @@
 				</div>
 				<!-- 注册 -->
 				<div id="modal_register" class="modal">
-					<form class="modal-content animate">
+					<form class="modal-content animate" id="RegisterForm">
 						<div class="imgcontainer" id="head-file">
 							<input type="file" name="image" id="image" @change="HeadImage('head-file')">
 							<span @click="CloseModal('modal_register')" class="close" title="Close Modal">&times;</span>
@@ -204,7 +204,8 @@ export default {
 					password : _this.password
 				}))
 				.then((res) => {
-					if(res.data.code == 500)
+					console.log(res)
+					if(res.data.code == 903)
 					{
 						_this.$dialog.alert({ mes: res.data.message })
 						_this.u_id = ''
@@ -215,7 +216,6 @@ export default {
 						_this.UserInfo.u_id = res.data.u_id
 						_this.UserInfo.name = res.data.name
 						_this.UserInfo.headimg = res.data.headimg
-						
 						_this.$store.commit('ChangeUserID', _this.UserInfo.u_id)
 						_this.$store.commit('ChangeUserName', _this.UserInfo.name)
 						_this.$store.commit('ChangeUserImg', _this.UserInfo.headimg)
@@ -227,15 +227,67 @@ export default {
 				})
 			}
 		},
+		// 弹窗
+		ToastMessage : function(message, icon = 'none', time = 1000)
+		{
+			this.$dialog.toast({
+				mes : message,
+				icon : icon,
+				timeout : time
+			})
+		},
 		// 注册
 		UserRegister : function()
 		{
-			console.log(123)
+			let _this = this
+			if(_this.regUser.reg_u_id == '' || _this.regUser.reg_password == '' || _this.regUser.reg_code == '')
+			{
+				_this.ToastMessage('还有未填完的项 ~ ', 'error', 1000 )
+			}
+			else
+			{
+				if(FormPatt.PassWord(_this.regUser.reg_password)  && FormPatt.Email(this.regUser.reg_email) && FormPatt.UserName(this.regUser.reg_u_id))
+				{
+					if(_this.regUser.reg_code != _this.$store.state.Code)
+					{
+						_this.ToastMessage('验证码不正确')
+					}
+					else
+					{
+						var myForm = document.getElementById('RegisterForm')
+						var formdata = new FormData(myForm)
+						formdata.append('u_id', _this.regUser.reg_u_id)
+						formdata.append('password', _this.regUser.reg_password)
+						formdata.append('email', _this.regUser.reg_email)
+						formdata.append('code', _this.regUser.reg_code)
+						formdata.append('image', _this.HeadFiles)
+					
+						let url = 'http://www.pengdaokuan.cn/DuApp/restful/public/index.php/index/User/RegisterUser'
+						this.$axios.post(url, formdata, {
+							headers : {
+								"Content-Type": "multipart/form-data"
+							}
+						})
+						.then((res) => {
+							if(res.data.code == 901){
+								_this.ToastMessage(res.data.message, 'error', 1000)
+							}else if(res.data.code == 900){
+								_this.ToastMessage(res.data.message, 'success', 1000)
+								setTimeout(()=> {
+									_this.ShowLoginDialog()
+								}, 1500)
+							}
+						})
+						.catch((err) => {
+							console.log('err')
+						})
+					}
+				}
+			}
 		},
 		// 获得验证码
 		getAccessCode : function()
 		{
-			
 			var sleep = 10
 			if(this.regUser.reg_email != '')
 			{
@@ -259,19 +311,13 @@ export default {
 				}
 				else
 				{
-					this.$dialog.toast({
-						mes: '请输入正确邮箱~',
-						timeout: 1500,
-						icon: 'error',
-					})
+					this.ToastMessage('请输入正确邮箱~', 'error', 1500)
 				}
 				
 			}
 			else
 			{
-				this.$dialog.toast({
-					mes : '请输入邮箱~'
-				})
+				this.ToastMessage('请输入邮箱~')
 			}
 		},
 		SendAccessCode : function()
@@ -283,10 +329,12 @@ export default {
 				email : _this.regUser.reg_email
 			}))
 			.then((res) => {
+				console.log(res.data)
 				if(res.data.code == 904){
 					this.$dialog.toast({
 						mes : res.data.message
 					})
+					_this.$store.commit('SurviveCode', res.data.rcode) 
 				}
 			})
 			.catch((err) => {

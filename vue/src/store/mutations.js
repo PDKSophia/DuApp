@@ -40,6 +40,10 @@ const mutations = {
 
     DecreaseCount(state){
         state.chees_count--
+    },
+
+    SurviveCode(state, code){
+        state.Code = code
     }
 }
 export default mutations

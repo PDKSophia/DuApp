@@ -80,8 +80,10 @@ export default {
             iNow : 0,   
 
             SignDay : [],           // 签到的天数
-            isSign : '',            // 是否已签到
+            isSign : false,            // 是否已签到
             u_id : '',  
+
+            CurrentDaySign : [],    // 当前月签到的天数
         }
     },
     methods : {
@@ -135,19 +137,22 @@ export default {
 
             this.currentYear = year
             this.currentMonth = month +  1
-
+            if(sessionStorage.getItem('sign') != null)
+            {
+                this.CurrentMonthSign(this.currentMonth)
+            }
         },
         // 上个月
         pre_month : function()
         {
-            // this.iNow --
-            // this.initDate(this.iNow)
+            this.iNow --
+            this.initDate(this.iNow)
         },
         // 下个月
         next_month : function()
         {
-            // this.iNow ++ 
-            // this.initDate(this.iNow)
+            this.iNow ++ 
+            this.initDate(this.iNow)
         },
         // 签到
         SignObjective : function()
@@ -171,19 +176,46 @@ export default {
                         u_id : _this.u_id,
                     }))
                     .then((res) => {
-                        if(res.data.code == 602){
+                        if(res.data.code == 911){
                             _this.$store.commit('ChangeSignFlag')
                             _this.isSign = true
                         }
-                        _this.$dialog.alert({mes: res.data.message})
+                        _this.$dialog.toast({mes: res.data.message, icon : 'success', timeout : 1500})
                         setTimeout(() => {
-                            _this.InitSignTimes()
+                            _this.InitSignTimes('sign')
                             _this.SignDay = []
-                        }, 1000)
+                        }, 2000)
                     })
                     .catch((err) => {
                         console.log(err)
                     })
+                }
+            }
+        },
+        CurrentMonthSign : function(view_month)
+        {
+            this.CurrentDaySign = []
+            var cur_date = new Date()
+            var cur_month = parseInt((cur_date.getMonth()+1))
+            var cur_day = parseInt(cur_date.getDate())
+            let allSign = JSON.parse(sessionStorage.getItem('sign'))
+            for(let i = 0; i < allSign.length; i++)
+            {
+                if(parseInt((allSign[i].sign_time).substring(5,7)) == view_month)
+                {
+                    this.CurrentDaySign.push({
+                        'li' : parseInt((allSign[i].sign_time).substring(8,10))
+                    })
+                }
+            }
+            for(let j = 0; j < this.AllLiArray.length; j++)
+            {
+                for(let k = 0; k < this.CurrentDaySign.length; k++)
+                {
+                    if(this.AllLiArray[j].li == this.CurrentDaySign[k].li)
+                    {
+                        this.AllLiArray[j].active = 'active'
+                    }
                 }
             }
         },
@@ -202,52 +234,85 @@ export default {
             }
         },
         // 获得所有的签到
-        InitSignTimes : function()
+        InitSignTimes : function(type = 'init')
         {
             let _this = this 
             let url = 'http://www.pengdaokuan.cn/DuApp/restful/public/index.php/index/User/GetAllSign'
-            _this.$axios.get(url, {
-                params : {
-                    u_id : _this.u_id
-                }
-            })
-            .then((res) => {
-                let respone = res.data
-                // console.log(respone)
-                if(respone.code == 603){
-                    _this.$dialog.alert({ mes : respone.message })
+            if(type != 'init')
+            {
+                sessionStorage.removeItem('sign')
+                _this.$axios.get(url, {
+                    params : {
+                        u_id : _this.u_id
+                    }
+                })
+                .then((res) => {
+                    console.log(123)
+                    let respone = res.data
+                    if(respone.code == 913){
+                        _this.$dialog.alert({ mes : respone.message })
+                    }
+                    else
+                    {
+                        sessionStorage.setItem('sign', JSON.stringify(respone))
+                        for(let i = 0; i < respone.length; i++)
+                        {
+                            _this.SignDay.push({
+                                'li' : parseInt((respone[i].sign_time).substring(8,10))
+                            })
+                        }
+                        _this.CurrentMonthSign(parseInt((new Date().getMonth()+1)))
+                    }
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+            }
+            else
+            {
+                if(sessionStorage.getItem('sign') != null && _this.isSign)
+                {
+                    _this.CurrentMonthSign(0)
                 }
                 else
                 {
-                    for(let i = 0; i < respone.length; i++)
-                    {
-                        _this.SignDay.push({
-                            'li' : parseInt((respone[i].sign_time).substring(8,10))
-                        })
-                    }
-                    for(let j = 0; j < _this.AllLiArray.length; j++)
-                    {
-                        for(let k = 0; k < _this.SignDay.length; k++)
+                    sessionStorage.removeItem('sign')
+                    _this.$axios.get(url, {
+                        params : {
+                            u_id : _this.u_id
+                        }
+                    })
+                    .then((res) => {
+                        console.log(res)
+                        let respone = res.data
+                        if(respone.code == 913){
+                            _this.$dialog.alert({ mes : respone.message })
+                        }
+                        else
                         {
-                            if(_this.AllLiArray[j].li == _this.SignDay[k].li)
+                            sessionStorage.setItem('sign', JSON.stringify(respone))
+                            for(let i = 0; i < respone.length; i++)
                             {
-                                _this.AllLiArray[j].active = 'active'
+                                _this.SignDay.push({
+                                    'li' : parseInt((respone[i].sign_time).substring(8,10))
+                                })
+                            }
+                            _this.CurrentMonthSign(parseInt((new Date().getMonth()+1)))
+                            let dayflag = _this.JudgeTimeTask(parseInt((respone[respone.length-1].sign_time).substring(5,7)) , parseInt((respone[respone.length-1].sign_time).substring(8,10)))
+                            if(dayflag){
+                                _this.$store.commit('ChangeSignFlag')
+                                _this.isSign = true
+                            }else{
+                                _this.isSign = false
                             }
                         }
-                    }
-                    let dayflag = _this.JudgeTimeTask(parseInt((respone[respone.length-1].sign_time).substring(5,7)) , parseInt((respone[respone.length-1].sign_time).substring(8,10)))
-                    if(dayflag){
-                        _this.$store.commit('ChangeSignFlag')
-                        _this.isSign = true
-                    }else{
-                        _this.isSign = false
-                    }
+                        
+                    })
+                    .catch((err) => {
+                        console.log(err)
+                    })
                 }
-                
-            })
-            .catch((err) => {
-                console.log(err)
-            })
+            }
         }
     },
     watch: {
@@ -257,11 +322,10 @@ export default {
         }
     },
     created() {
-        this.initDate(0)
         this.u_id = this.$store.state.CurrentU_ID
         this.isSign = this.$store.state.isSign
         this.InitSignTimes()
-        // console.log(this.$store.state.CurrentScore)
+        this.initDate(0)
     }
 }
 </script>
