@@ -1,6 +1,9 @@
 嘟嘟WebApp 
 ===============
 
+## v1版本演示
+http://www.pengdaokuan.cn/DuApp
+
 ## 技术栈
 + Vue-cli
 + Vuex
@@ -101,12 +104,13 @@ https://github.com/PDKSophia/duo-mi
  
 ## 其他信息
 
+后台接口是用ThinkPHP5写等，这边新版本继续沿用原v1版本的接口，可能会适当修改接口信息
+
 API接口是在github上找的，包括QQ音乐的API也是在github上找的
 
 免费开源使用。
 
-
-版权所有Copyright © 2018 by PDK (http://www.pengdaokuan.cn/DuApp)
+版权所有Copyright © 2018 by PDK (http://www.pengdaokuan.cn)
 
 All rights reserved。
 
