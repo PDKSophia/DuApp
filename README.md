@@ -1,5 +1,7 @@
-嘟嘟WebApp 
+DuApp 
 ===============
+
+> 已不再维护，请移步至 v2 版本
 
 ## v1版本演示
 http://www.pengdaokuan.cn/DuApp
