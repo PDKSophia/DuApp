@@ -1,10 +1,12 @@
-DuApp 
-===============
+# DuApp
 
-> 已不再维护，请移步至 v2 版本
+![](https://img.shields.io/badge/Author-PDK-blue.svg)
+![](https://img.shields.io/badge/license-MIT-yellowgreen.svg)
+![](https://img.shields.io/badge/Vue-2.5-yellowgreen.svg)
+![](https://img.shields.io/badge/ThinkPHP-5.x-green.svg)
 
-## v1版本演示
-http://www.pengdaokuan.cn/DuApp
+> 📢 已不再维护，请移步至 v2 版本
+
 
 ## 技术栈
 + Vue-cli
@@ -17,15 +19,16 @@ http://www.pengdaokuan.cn/DuApp
 + ...
 
 ## 目标功能
-- [ ] 热门电影排行
-- [ ] 音乐播放
-- [ ] 查询天气
-- [ ] 打卡签到，获得积分
-- [ ] 博客文章
-- [ ] 脑筋急转弯答题
-- [ ] 动态分享
+- ✅ 热门电影排行
+- ✅ 音乐播放
+- ✅ 查询天气
+- ✅ 打卡签到，获得积分
+- ✅ 博客文章
+- ✅ 脑筋急转弯答题
+- ✅ 动态分享
 
 ## 嘟嘟WebApp项目环境
+
 > Node版本v8.0以上
 > PHP5.6
 
@@ -66,9 +69,11 @@ WebApp
 ~~~
 
 ## V2 版本移步
-https://github.com/PDKSophia/duo-mi
+
+[👉 朵蜜](https://github.com/PDKSophia/duo-mi)
 
 ## 新版本说明
+
 ```javascript
 
     1 : 采用 vue-cli 3.0 初始化项目
@@ -82,18 +87,12 @@ https://github.com/PDKSophia/duo-mi
 ```
 
 ## 再多说几句
-```base
 
-    此项目是博主在刚学vue 以及初次使用vuex开发到项目。
+> 😭 此项目是博主在刚学vue 以及初次使用vuex开发到项目。经过不断的学习以及实习期间学到的技术，才发现自己到这个项目代码写到很菜。所以打算进行一次重构，将api抽离，并且对vuex进行模块化管理。新版本到代码可能在大佬们眼中也同样菜，但是有进步终归是好事嘛～
 
-    经过不断的学习以及实习期间学到的技术，才发现自己到这个项目代码写到很菜。
+## 更新说明
 
-    所以打算进行一次重构，将api抽离，并且对vuex进行模块化管理。
-
-    新版本到代码可能在大佬们眼中也同样菜，但是有进步终归是好事嘛～
-
-```
-
+已不再更新，想看代码的，直接移步 **V2** 朵蜜版本
 
 ## 使用
  1 ：git clone 
@@ -112,7 +111,7 @@ API接口是在github上找的，包括QQ音乐的API也是在github上找的
 
 免费开源使用。
 
-版权所有Copyright © 2018 by PDK (http://www.pengdaokuan.cn)
+版权所有Copyright © 2018 by PDK
 
 All rights reserved。
 
